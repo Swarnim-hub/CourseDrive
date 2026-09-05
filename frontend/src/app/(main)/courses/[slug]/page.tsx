@@ -46,7 +46,7 @@ export default function CourseDetailPage() {
             <p className="text-slate-300 text-lg">{course.subtitle || course.description}</p>
 
             <div className="flex flex-wrap items-center gap-4 text-sm">
-              <RatingStars rating={course.average_rating} />
+              <RatingStars rating={course.average_rating || 0} />
               <span>({course.total_reviews} ratings)</span>
               <span>{course.total_students} students</span>
             </div>
