@@ -10,6 +10,7 @@ import { CurriculumList } from "@/components/course/CurriculumList";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/utils";
+import { api } from "@/lib/api";
 
 export default function CourseDetailPage() {
   const { slug } = useParams();
@@ -32,8 +33,20 @@ export default function CourseDetailPage() {
       router.push("/login");
       return;
     }
-    await enrollMutation.mutateAsync(course.id);
-    router.push(`/courses/${course.slug}/learn`);
+    
+    if (!course.is_free && course.price > 0) {
+      try {
+        const res = await api.post("/payments/checkout", { course_id: Number(course.id) });
+        if (res.data.checkout_url) {
+          window.location.href = res.data.checkout_url;
+        }
+      } catch (error) {
+        console.error("Failed to initiate checkout", error);
+      }
+    } else {
+      await enrollMutation.mutateAsync(course.id);
+      router.push(`/courses/${course.slug}/learn`);
+    }
   };
 
   return (
@@ -41,7 +54,7 @@ export default function CourseDetailPage() {
       <div className="bg-slate-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-4">
-            <Badge variant="secondary" className="bg-slate-800 text-slate-200">{course.category}</Badge>
+            <Badge variant="secondary" className="bg-slate-800 text-slate-200">{course.category?.name || "General"}</Badge>
             <h1 className="text-3xl sm:text-4xl font-bold">{course.title}</h1>
             <p className="text-slate-300 text-lg">{course.subtitle || course.description}</p>
 

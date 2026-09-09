@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCreateCourse } from "@/hooks/useCourses";
-import { COURSE_CATEGORIES } from "@/lib/constants";
+import { DIFFICULTY_LEVELS } from "@/lib/constants";
+import { api } from "@/lib/api";
 
 export default function NewCoursePage() {
   const router = useRouter();
@@ -13,7 +14,18 @@ export default function NewCoursePage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("49.99");
-  const [category, setCategory] = useState("Development");
+  const [categories, setCategories] = useState<{id: number, name: string}[]>([]);
+  const [categoryId, setCategoryId] = useState(1);
+  const [level, setLevel] = useState("all_levels");
+
+  useEffect(() => {
+    api.get("/categories").then(res => {
+      setCategories(res.data);
+      if (res.data.length > 0) {
+        setCategoryId(res.data[0].id);
+      }
+    }).catch(console.error);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,10 +34,10 @@ export default function NewCoursePage() {
       title,
       subtitle: title,
       description,
-      category_id: 1,
+      category_id: categoryId,
       price: numPrice,
       is_free: numPrice === 0,
-      level: "all_levels" as any,
+      level: level as any,
       requirements: ["Basic understanding of the subject"],
       what_you_will_learn: ["Practical skills and real-world projects"],
     });
@@ -61,16 +73,29 @@ export default function NewCoursePage() {
           />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">Category</label>
             <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              value={categoryId}
+              onChange={(e) => setCategoryId(Number(e.target.value))}
               className="w-full h-10 px-3 text-sm rounded-md border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
             >
-              {COURSE_CATEGORIES.map((c) => (
-                <option key={c.id} value={c.name}>{c.name}</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Difficulty Level</label>
+            <select
+              value={level}
+              onChange={(e) => setLevel(e.target.value)}
+              className="w-full h-10 px-3 text-sm rounded-md border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+            >
+              {DIFFICULTY_LEVELS.map((dl) => (
+                <option key={dl} value={dl}>{dl.replace("_", " ").replace(/\b\w/g, l => l.toUpperCase())}</option>
               ))}
             </select>
           </div>

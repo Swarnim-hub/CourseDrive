@@ -75,11 +75,12 @@ export interface Course {
 }
 
 export interface CourseFilterParams {
-  category?: string;
-  difficulty?: string;
+  category_id?: number;
+  level?: string;
   price_type?: "all" | "free" | "paid";
   rating?: number;
   search?: string;
+  instructor_id?: string;
   sort_by?: "popularity" | "rating" | "newest" | "price_asc" | "price_desc";
   page?: number;
   limit?: number;

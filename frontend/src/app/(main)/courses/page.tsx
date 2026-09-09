@@ -1,20 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CourseGrid } from "@/components/course/CourseGrid";
 import { useCourses } from "@/hooks/useCourses";
-import { COURSE_CATEGORIES } from "@/lib/constants";
+import { api } from "@/lib/api";
 import { Search, Sliders } from "lucide-react";
 
 export default function CoursesCatalogPage() {
   const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("all");
-  const [difficulty, setDifficulty] = useState("all");
+  const [categoryId, setCategoryId] = useState<number | "all">("all");
+  const [level, setLevel] = useState("all");
+  const [categories, setCategories] = useState<{id: number, name: string}[]>([]);
+
+  useEffect(() => {
+    api.get("/categories").then(res => setCategories(res.data)).catch(console.error);
+  }, []);
 
   const { data, isLoading } = useCourses({
     search: search || undefined,
-    category: category === "all" ? undefined : category,
-    difficulty: difficulty === "all" ? undefined : difficulty,
+    category_id: categoryId === "all" ? undefined : Number(categoryId),
+    level: level === "all" ? undefined : level,
   });
 
   const courses = data?.courses || [];
@@ -47,20 +52,20 @@ export default function CoursesCatalogPage() {
 
         {/* Category Filter */}
         <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value === "all" ? "all" : Number(e.target.value))}
           className="h-9 px-3 text-sm rounded-md border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
         >
           <option value="all">All Categories</option>
-          {COURSE_CATEGORIES.map((c) => (
+          {categories.map((c) => (
             <option key={c.id} value={c.id}>{c.name}</option>
           ))}
         </select>
 
         {/* Difficulty Filter */}
         <select
-          value={difficulty}
-          onChange={(e) => setDifficulty(e.target.value)}
+          value={level}
+          onChange={(e) => setLevel(e.target.value)}
           className="h-9 px-3 text-sm rounded-md border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
         >
           <option value="all">All Levels</option>

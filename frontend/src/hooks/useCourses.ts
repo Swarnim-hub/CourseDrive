@@ -6,10 +6,10 @@ export function useCourses(courseParams?: CourseFilterParams) {
   return useQuery({
     queryKey: ["courses", courseParams],
     queryFn: async () => {
-      const res = await api.get<{ courses: Course[]; total: number; page: number }>("/courses", {
+      const res = await api.get<{ items: Course[]; total: number; page: number }>("/courses", {
         params: courseParams,
       });
-      return res.data;
+      return { courses: res.data.items || [], total: res.data.total, page: res.data.page };
     },
   });
 }

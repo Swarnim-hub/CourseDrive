@@ -9,7 +9,7 @@ import { formatPrice } from "@/lib/utils";
 
 export default function InstructorDashboardPage() {
   const { user } = useAuth();
-  const { data, isLoading } = useCourses();
+  const { data, isLoading } = useCourses(user?.id ? { instructor_id: user.id } : undefined);
   const courses = data?.courses || [];
 
   const stats = [
