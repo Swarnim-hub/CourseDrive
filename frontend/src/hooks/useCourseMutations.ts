@@ -8,7 +8,7 @@ export function useCreateSection(courseId: string) {
     mutationFn: async (payload: { title: string; order_index?: number }) => {
       const res = await api.post<Section>(`/courses/${courseId}/sections`, {
         title: payload.title,
-        order_index: payload.order_index ?? 0,
+        order: payload.order_index ?? 0,
       });
       return res.data;
     },
@@ -25,7 +25,7 @@ export function useUpdateSection(courseId: string) {
     mutationFn: async ({ sectionId, title, order_index }: { sectionId: string; title: string; order_index?: number }) => {
       const res = await api.put<Section>(`/courses/sections/${sectionId}`, {
         title,
-        order_index,
+        order: order_index,
       });
       return res.data;
     },
@@ -87,7 +87,7 @@ export function useUpdateLesson(courseId: string) {
       pdf_url?: string;
       duration_seconds?: number;
       is_preview?: boolean;
-      order_index?: number;
+      order?: number;
     }) => {
       const res = await api.put<Lesson>(`/lessons/${lessonId}`, payload);
       return res.data;
