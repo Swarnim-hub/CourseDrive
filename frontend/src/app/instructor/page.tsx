@@ -99,6 +99,11 @@ export default function InstructorDashboardPage() {
                 </div>
 
                 <div className="flex items-center gap-2">
+                  <Link href={`/instructor/courses/${c.id}/edit`}>
+                    <Button size="sm">
+                      <Edit3 className="h-3.5 w-3.5 mr-1" /> Edit Curriculum
+                    </Button>
+                  </Link>
                   <Link href={`/courses/${c.slug}`}>
                     <Button variant="outline" size="sm">
                       <Eye className="h-3.5 w-3.5 mr-1" /> View Course

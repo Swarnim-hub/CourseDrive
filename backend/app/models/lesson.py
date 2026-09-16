@@ -32,6 +32,7 @@ class Lesson(Base):
     )
     content: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     video_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    pdf_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     duration_seconds: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     is_preview: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     order_index: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

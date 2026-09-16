@@ -16,8 +16,11 @@ export interface Lesson {
   section_id: string;
   title: string;
   description?: string;
+  content?: string;
   video_url?: string;
-  duration_minutes: number;
+  pdf_url?: string;
+  duration_minutes?: number;
+  duration_seconds?: number;
   order_index: number;
   is_preview: boolean;
   resources?: LessonResource[];

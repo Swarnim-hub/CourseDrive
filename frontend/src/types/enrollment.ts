@@ -13,7 +13,9 @@ export interface Enrollment {
   course_id: string;
   course: Course;
   progress_percent: number;
-  completed_lessons: string[];
+  progress_percentage?: number;
+  status?: string;
+  completed_lessons?: string[];
   last_lesson_id?: string;
   certificate_id?: string;
   enrolled_at: string;

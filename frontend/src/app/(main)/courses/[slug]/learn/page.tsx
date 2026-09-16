@@ -50,15 +50,17 @@ export default function CourseLearningPlayerPage() {
 
         <div className="flex items-center gap-6">
           <div className="hidden sm:flex items-center gap-3">
-            <Progress value={enrollment?.progress_percent || 0} className="w-32 h-2 bg-slate-800" />
-            <span className="text-xs text-slate-400">{enrollment?.progress_percent || 0}% Completed</span>
+            <Progress value={enrollment?.progress_percentage ?? enrollment?.progress_percent ?? 0} className="w-32 h-2 bg-slate-800" />
+            <span className="text-xs text-slate-400">
+              {Math.round(enrollment?.progress_percentage ?? enrollment?.progress_percent ?? 0)}% Completed
+            </span>
           </div>
 
-          {enrollment?.progress_percent === 100 && (
+          {(enrollment?.progress_percentage === 100 || enrollment?.progress_percent === 100 || enrollment?.status === "completed") && (
             <Link href="/certificates">
-              <Button size="sm" variant="secondary" className="bg-emerald-600 hover:bg-emerald-700 text-white">
+              <Button size="sm" variant="secondary" className="bg-emerald-600 hover:bg-emerald-700 text-white animate-pulse">
                 <Award className="h-4 w-4 mr-2" />
-                View Certificate
+                Claim / View Certificate
               </Button>
             </Link>
           )}
@@ -103,7 +105,22 @@ export default function CourseLearningPlayerPage() {
             <div className="mt-6 flex items-center justify-between border-b border-slate-800 pb-4">
               <div>
                 <h2 className="text-xl font-semibold">{currentLesson?.title}</h2>
-                <p className="text-sm text-slate-400 mt-1">{currentLesson?.description || "No description provided."}</p>
+                <p className="text-sm text-slate-400 mt-1">{currentLesson?.description || currentLesson?.content || "No description provided."}</p>
+                
+                {currentLesson?.pdf_url && (
+                  <div className="mt-4">
+                    <a
+                      href={currentLesson.pdf_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-300 border border-purple-800/40 text-sm font-medium transition-colors"
+                    >
+                      <Award className="w-4 h-4 text-purple-400" />
+                      Download Lesson Notes &amp; Resources (PDF)
+                    </a>
+                  </div>
+                )}
               </div>
               <Button
                 onClick={handleLessonComplete}

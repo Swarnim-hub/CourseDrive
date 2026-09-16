@@ -9,6 +9,7 @@ class LessonBase(BaseModel):
     lesson_type: LessonType = LessonType.VIDEO
     content: Optional[str] = None
     video_url: Optional[str] = None
+    pdf_url: Optional[str] = None
     duration_seconds: int = 0
     is_preview: bool = False
     order_index: int = Field(0, alias="order")
@@ -25,6 +26,7 @@ class LessonUpdate(BaseModel):
     lesson_type: Optional[LessonType] = None
     content: Optional[str] = None
     video_url: Optional[str] = None
+    pdf_url: Optional[str] = None
     duration_seconds: Optional[int] = None
     is_preview: Optional[bool] = None
     order_index: Optional[int] = None

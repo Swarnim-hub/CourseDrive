@@ -90,6 +90,7 @@ async def get_lesson(
         created_at=lesson.created_at,
         is_completed=is_completed,
         last_position_seconds=last_position,
+        pdf_url=lesson.pdf_url,
         quiz_id=lesson.quiz.id if lesson.quiz else None,
         assignment_id=lesson.assignment.id if lesson.assignment else None,
     )
@@ -149,6 +150,30 @@ async def upload_lesson_video(
     lesson.video_url = video_url
     await db.flush()
     return {"video_url": video_url}
+
+
+@router.post("/{lesson_id}/pdf")
+async def upload_lesson_pdf(
+    lesson_id: int,
+    current_user: InstructorUserDep,
+    db: SessionDep,
+    file: UploadFile = File(...),
+):
+    """Upload a PDF resource file for a lesson."""
+    lesson = await db.scalar(
+        select(Lesson)
+        .where(Lesson.id == lesson_id)
+        .options(selectinload(Lesson.section).selectinload(Section.course))
+    )
+    if not lesson:
+        raise NotFoundException("Lesson", lesson_id)
+    if current_user.role != UserRole.ADMIN and lesson.section.course.instructor_id != current_user.id:
+        raise ForbiddenException("Unauthorized to modify this lesson")
+
+    pdf_url = await storage_service.save_file(file, folder="pdfs", resource_type="raw")
+    lesson.pdf_url = pdf_url
+    await db.flush()
+    return {"pdf_url": pdf_url}
 
 
 @router.post("/{lesson_id}/progress", response_model=LessonProgressResponse)

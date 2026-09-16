@@ -41,10 +41,9 @@ export function useUpdateProgress() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (payload: { courseId: string; lessonId: string; completed?: boolean; lastWatchedSecond?: number }) => {
-      const res = await api.post(`/enrollments/${payload.courseId}/progress`, {
-        lesson_id: payload.lessonId,
-        completed: payload.completed,
-        last_watched_second: payload.lastWatchedSecond,
+      const res = await api.post(`/lessons/${payload.lessonId}/progress`, {
+        is_completed: payload.completed ?? true,
+        last_position_seconds: payload.lastWatchedSecond ?? 0,
       });
       return res.data;
     },
