@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CourseGrid } from "@/components/course/CourseGrid";
-import { COURSE_CATEGORIES } from "@/lib/constants";
+
 import * as Icons from "lucide-react";
 import { useCourses, useCategories } from "@/hooks/useCourses";
 
