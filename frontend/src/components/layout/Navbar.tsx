@@ -6,21 +6,30 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
-import { BookOpen, Search, LogOut, LayoutDashboard } from "lucide-react";
+import { BookOpen, Search, LogOut, LayoutDashboard, Menu, X } from "lucide-react";
 
 export function Navbar() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout, isInstructor, isAdmin } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/90 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
           {/* Logo & Main Nav */}
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4 md:gap-8">
+            {/* Mobile Menu Toggle */}
+            <button 
+              className="md:hidden text-slate-600 hover:text-slate-900 focus:outline-none" 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+
             <Link href="/" className="flex items-center gap-2.5 font-bold text-xl text-blue-600">
-              <div className="p-1.5 bg-blue-600 text-white rounded-lg">
+              <div className="p-1.5 bg-blue-600 text-white rounded-lg hidden sm:block">
                 <BookOpen className="h-6 w-6" />
               </div>
               <span className="text-slate-900">Course<span className="text-blue-600">Drive</span></span>
@@ -53,7 +62,7 @@ export function Navbar() {
           </div>
 
           {/* Search & Actions */}
-          <div className="flex items-center gap-4 flex-1 justify-end">
+          <div className="flex items-center gap-2 md:gap-4 flex-1 justify-end">
             <div className="hidden lg:flex items-center w-72 relative">
               <Search className="absolute left-3 h-4 w-4 text-slate-400" />
               <input
@@ -131,7 +140,7 @@ export function Navbar() {
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <Link href="/login">
+                <Link href="/login" className="hidden sm:block">
                   <Button variant="ghost" size="sm">Log in</Button>
                 </Link>
                 <Link href="/register">
@@ -141,6 +150,76 @@ export function Navbar() {
             )}
           </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden py-4 border-t border-slate-100 space-y-4">
+            <nav className="flex flex-col gap-4 text-sm font-medium px-2">
+              <Link
+                href="/courses"
+                onClick={() => setMobileMenuOpen(false)}
+                className={pathname === "/courses" ? "text-blue-600" : "text-slate-600"}
+              >
+                Explore Courses
+              </Link>
+              {isAuthenticated && (
+                <>
+                  <Link
+                    href="/my-learning"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={pathname === "/my-learning" ? "text-blue-600" : "text-slate-600"}
+                  >
+                    My Learning
+                  </Link>
+                  <Link
+                    href="/certificates"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={pathname === "/certificates" ? "text-blue-600" : "text-slate-600"}
+                  >
+                    Certificates
+                  </Link>
+                  {isInstructor && (
+                    <Link
+                      href="/instructor"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={pathname === "/instructor" ? "text-blue-600" : "text-slate-600"}
+                    >
+                      Instructor Studio
+                    </Link>
+                  )}
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={pathname === "/admin" ? "text-blue-600" : "text-slate-600"}
+                    >
+                      Admin Dashboard
+                    </Link>
+                  )}
+                </>
+              )}
+              {!isAuthenticated && (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-slate-600"
+                >
+                  Log in
+                </Link>
+              )}
+            </nav>
+            {/* Mobile Search */}
+            <div className="px-2">
+              <div className="flex items-center w-full relative">
+                <Search className="absolute left-3 h-4 w-4 text-slate-400" />
+                <input
+                  placeholder="What do you want to learn?"
+                  className="w-full h-10 pl-9 pr-4 text-sm rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-600"
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

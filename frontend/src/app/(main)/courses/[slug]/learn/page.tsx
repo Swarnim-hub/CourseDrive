@@ -68,10 +68,10 @@ export default function CourseLearningPlayerPage() {
       </div>
 
       {/* Main Body */}
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
         {/* Player & Content Area */}
         <div className="flex-1 flex flex-col overflow-y-auto">
-          <div className="p-6 max-w-5xl mx-auto w-full">
+          <div className="p-4 sm:p-6 max-w-5xl mx-auto w-full">
             {currentLesson?.quiz_id ? (
               <QuizPlayer
                 quiz={{
@@ -102,7 +102,7 @@ export default function CourseLearningPlayerPage() {
               />
             )}
 
-            <div className="mt-6 flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="mt-6 flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-800 pb-4">
               <div>
                 <h2 className="text-xl font-semibold">{currentLesson?.title}</h2>
                 <p className="text-sm text-slate-400 mt-1">{currentLesson?.description || currentLesson?.content || "No description provided."}</p>
@@ -117,7 +117,7 @@ export default function CourseLearningPlayerPage() {
                       className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-300 border border-purple-800/40 text-sm font-medium transition-colors"
                     >
                       <Award className="w-4 h-4 text-purple-400" />
-                      Download Lesson Notes &amp; Resources (PDF)
+                      Download Lesson Notes (PDF)
                     </a>
                   </div>
                 )}
@@ -125,7 +125,7 @@ export default function CourseLearningPlayerPage() {
               <Button
                 onClick={handleLessonComplete}
                 variant="outline"
-                className="border-slate-700 text-white hover:bg-slate-800"
+                className="border-slate-700 text-white hover:bg-slate-800 w-full sm:w-auto shrink-0"
               >
                 <CheckCircle className="w-4 h-4 mr-2 text-emerald-500" />
                 Mark as Complete
@@ -135,7 +135,7 @@ export default function CourseLearningPlayerPage() {
         </div>
 
         {/* Sidebar Lesson List */}
-        <div className="w-80 bg-slate-950 border-l border-slate-800 flex flex-col overflow-y-auto">
+        <div className="w-full lg:w-80 bg-slate-950 border-t lg:border-t-0 lg:border-l border-slate-800 flex flex-col lg:overflow-y-auto">
           <div className="p-4 border-b border-slate-800">
             <h3 className="font-semibold text-sm">Course Content</h3>
           </div>
