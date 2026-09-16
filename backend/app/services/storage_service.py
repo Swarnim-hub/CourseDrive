@@ -72,6 +72,19 @@ class StorageService:
         folder: str = "certificates",
     ) -> str:
         """Save raw bytes (e.g. generated PDF) locally or to cloud."""
+        if has_cloudinary:
+            try:
+                import io
+                result = cloudinary.uploader.upload(
+                    io.BytesIO(data),
+                    folder=f"coursedrive/{folder}",
+                    resource_type="raw",
+                    public_id=filename
+                )
+                return result.get("secure_url") or result.get("url")
+            except Exception as e:
+                logger.error(f"Cloudinary upload failed for bytes: {e}. Falling back to local storage.")
+
         sub_dir = os.path.join(self.upload_dir, folder)
         os.makedirs(sub_dir, exist_ok=True)
 
@@ -79,7 +92,8 @@ class StorageService:
         with open(file_path, "wb") as f:
             f.write(data)
 
+        # Use an environment variable or fallback to NEXT_PUBLIC_API_URL domain logic?
+        # Actually just use BACKEND_URL, but we can't reliably know frontend URL here.
         return f"{settings.BACKEND_URL}/uploads/{folder}/{filename}"
-
 
 storage_service = StorageService()
