@@ -96,7 +96,6 @@ export default function HomePage() {
                   <span className="font-semibold text-sm text-slate-900 group-hover:text-blue-600 transition-colors">
                     {cat.name}
                   </span>
-                  <span className="text-xs text-slate-400 mt-1">{cat.count}</span>
                 </Link>
               );
             })}
