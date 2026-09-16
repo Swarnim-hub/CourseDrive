@@ -135,13 +135,18 @@ export default function EditCoursePage() {
     e.preventDefault();
     if (!newSectionTitle.trim()) return;
     const orderIndex = (course?.sections?.length || 0) + 1;
-    await createSectionMutation.mutateAsync({
-      title: newSectionTitle.trim(),
-      order_index: orderIndex,
-    });
-    setNewSectionTitle("");
-    setShowAddSection(false);
-    refetch();
+    try {
+      await createSectionMutation.mutateAsync({
+        title: newSectionTitle.trim(),
+        order_index: orderIndex,
+      });
+      setNewSectionTitle("");
+      setShowAddSection(false);
+      refetch();
+    } catch (error: any) {
+      console.error("Section creation error:", error);
+      alert("Failed to save section: " + (error?.response?.data?.detail || error.message || "Unknown error"));
+    }
   };
 
   const handleSaveSectionTitle = async (sectionId: string) => {
@@ -166,15 +171,20 @@ export default function EditCoursePage() {
     const section = course?.sections?.find((s) => String(s.id) === String(sectionId));
     const orderIndex = (section?.lessons?.length || 0) + 1;
 
-    await createLessonMutation.mutateAsync({
-      section_id: Number(sectionId),
-      title: newLessonTitle.trim(),
-      lesson_type: "video",
-      order: orderIndex,
-    });
-    setNewLessonTitle("");
-    setAddingLessonSectionId(null);
-    refetch();
+    try {
+      await createLessonMutation.mutateAsync({
+        section_id: Number(sectionId),
+        title: newLessonTitle.trim(),
+        lesson_type: "video",
+        order: orderIndex,
+      });
+      setNewLessonTitle("");
+      setAddingLessonSectionId(null);
+      refetch();
+    } catch (error: any) {
+      console.error("Lesson creation error:", error);
+      alert("Failed to add lesson: " + (error?.response?.data?.detail || error.message || "Unknown error"));
+    }
   };
 
   const handleDeleteLesson = async (lessonId: string) => {
