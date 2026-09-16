@@ -723,18 +723,19 @@ export default function EditCoursePage() {
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Course Title</label>
-              <Input required value={title} onChange={(e) => setTitle(e.target.value)} />
+              <Input required minLength={3} maxLength={255} value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Subtitle</label>
-              <Input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
+              <Input value={subtitle} maxLength={500} onChange={(e) => setSubtitle(e.target.value)} />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1">Course Description</label>
               <textarea
                 required
+                minLength={5}
                 rows={5}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}

@@ -32,20 +32,29 @@ export default function NewCoursePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const numPrice = parseFloat(price) || 0;
-    const reqList = requirements.split("\\n").filter(Boolean);
-    const learnList = whatYouWillLearn.split("\\n").filter(Boolean);
-    await createMutation.mutateAsync({
-      title,
-      subtitle: title,
-      description,
-      category_id: categoryId,
-      price: numPrice,
-      is_free: numPrice === 0,
-      level: level as any,
-      requirements: reqList.length ? reqList : ["Basic understanding of the subject"],
-      what_you_will_learn: learnList.length ? learnList : ["Practical skills and real-world projects"],
-    });
-    router.push("/instructor");
+    const reqList = requirements.split("\n").filter(Boolean);
+    const learnList = whatYouWillLearn.split("\n").filter(Boolean);
+    try {
+      await createMutation.mutateAsync({
+        title,
+        subtitle: title,
+        description,
+        category_id: categoryId,
+        price: numPrice,
+        is_free: numPrice === 0,
+        level: level as any,
+        requirements: reqList.length ? reqList : ["Basic understanding of the subject"],
+        what_you_will_learn: learnList.length ? learnList : ["Practical skills and real-world projects"],
+      });
+      router.push("/instructor");
+    } catch (error: any) {
+      console.error("Failed to create course:", error);
+      let errorMsg = error?.response?.data?.detail || error.message || "Unknown error";
+      if (Array.isArray(errorMsg)) {
+        errorMsg = errorMsg.map((err: any) => `${err.loc.join(".")}: ${err.msg}`).join("\n");
+      }
+      alert("Failed to create course:\n" + errorMsg);
+    }
   };
 
   return (
@@ -59,6 +68,8 @@ export default function NewCoursePage() {
           <Input
             type="text"
             required
+            minLength={3}
+            maxLength={255}
             placeholder="e.g. Master Modern Web Architecture"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -69,6 +80,7 @@ export default function NewCoursePage() {
           <label className="block text-xs font-semibold text-slate-700 mb-1">Course Description</label>
           <textarea
             required
+            minLength={5}
             rows={4}
             placeholder="Describe what students will learn in this course..."
             value={description}
