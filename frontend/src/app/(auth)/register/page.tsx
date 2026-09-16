@@ -59,6 +59,8 @@ export default function RegisterPage() {
             <Input
               type="text"
               required
+              minLength={2}
+              maxLength={255}
               placeholder="Alex Morgan"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
@@ -83,6 +85,8 @@ export default function RegisterPage() {
             <Input
               type="password"
               required
+              minLength={6}
+              maxLength={128}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

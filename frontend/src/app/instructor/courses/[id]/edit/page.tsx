@@ -360,6 +360,8 @@ export default function EditCoursePage() {
                   <Input
                     type="text"
                     required
+                    minLength={2}
+                    maxLength={255}
                     placeholder="e.g. Introduction & Setup"
                     value={newSectionTitle}
                     onChange={(e) => setNewSectionTitle(e.target.value)}
@@ -404,20 +406,29 @@ export default function EditCoursePage() {
                     {/* Section Header */}
                     <div className="bg-slate-100/70 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
                       {editingSectionId === String(section.id) ? (
-                        <div className="flex items-center gap-2 flex-1 mr-4">
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            handleSaveSectionTitle(String(section.id));
+                          }}
+                          className="flex items-center gap-2 flex-1 mr-4"
+                        >
                           <Input
+                            required
+                            minLength={2}
+                            maxLength={255}
                             value={editingSectionTitle}
                             onChange={(e) => setEditingSectionTitle(e.target.value)}
                             className="h-8 text-sm"
                             autoFocus
                           />
-                          <Button size="sm" onClick={() => handleSaveSectionTitle(String(section.id))}>
+                          <Button size="sm" type="submit">
                             Save
                           </Button>
-                          <Button size="sm" variant="outline" onClick={() => setEditingSectionId(null)}>
+                          <Button type="button" size="sm" variant="outline" onClick={() => setEditingSectionId(null)}>
                             Cancel
                           </Button>
-                        </div>
+                        </form>
                       ) : (
                         <div className="flex items-center gap-3">
                           <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
@@ -460,26 +471,30 @@ export default function EditCoursePage() {
 
                     {/* Add Lesson inline form */}
                     {addingLessonSectionId === String(section.id) && (
-                      <div className="p-4 bg-emerald-50 border-b border-emerald-100 flex items-center gap-3">
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          handleAddLesson(String(section.id));
+                        }}
+                        className="p-4 bg-emerald-50 border-b border-emerald-100 flex items-center gap-3"
+                      >
                         <Input
+                          required
+                          minLength={2}
+                          maxLength={255}
                           placeholder="e.g. Lesson 1: Welcome & Environment Setup"
                           value={newLessonTitle}
                           onChange={(e) => setNewLessonTitle(e.target.value)}
                           className="h-9 text-sm"
                           autoFocus
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              handleAddLesson(String(section.id));
-                            }
-                          }}
                         />
-                        <Button size="sm" onClick={() => handleAddLesson(String(section.id))} isLoading={createLessonMutation.isPending}>
+                        <Button type="submit" size="sm" isLoading={createLessonMutation.isPending}>
                           Add
                         </Button>
-                        <Button size="sm" variant="outline" onClick={() => setAddingLessonSectionId(null)}>
+                        <Button type="button" size="sm" variant="outline" onClick={() => setAddingLessonSectionId(null)}>
                           Cancel
                         </Button>
-                      </div>
+                      </form>
                     )}
 
                     {/* Lesson Items */}
@@ -547,13 +562,22 @@ export default function EditCoursePage() {
 
                               {/* Expanded Lesson Editor Panel */}
                               {isExpanded && (
-                                <div className="p-6 bg-slate-50 border-t border-slate-200 space-y-6">
+                                <form 
+                                  onSubmit={(e) => {
+                                    e.preventDefault();
+                                    handleSaveLesson(String(lesson.id));
+                                  }}
+                                  className="p-6 bg-slate-50 border-t border-slate-200 space-y-6"
+                                >
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                       <label className="block text-xs font-semibold text-slate-700 mb-1">
                                         Lesson Title
                                       </label>
                                       <Input
+                                        required
+                                        minLength={2}
+                                        maxLength={255}
                                         value={lessonFormData.title}
                                         onChange={(e) =>
                                           setLessonFormData({ ...lessonFormData, title: e.target.value })
@@ -567,6 +591,7 @@ export default function EditCoursePage() {
                                       </label>
                                       <Input
                                         type="number"
+                                        min={0}
                                         value={lessonFormData.duration_seconds}
                                         onChange={(e) =>
                                           setLessonFormData({
@@ -689,14 +714,14 @@ export default function EditCoursePage() {
                                     </label>
 
                                     <Button
+                                      type="submit"
                                       size="sm"
-                                      onClick={() => handleSaveLesson(String(lesson.id))}
                                       isLoading={updateLessonMutation.isPending}
                                     >
                                       <Save className="h-3.5 w-3.5 mr-1" /> Save Lesson Details
                                     </Button>
                                   </div>
-                                </div>
+                                </form>
                               )}
                             </div>
                           );
