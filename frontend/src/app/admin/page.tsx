@@ -2,12 +2,28 @@
 
 import { Users, BookOpen, Activity, Award } from "lucide-react";
 
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
+
 export default function AdminKPIDashboardPage() {
+  const [data, setData] = useState({ users: 0, courses: 0, enrollments: 0, certificates: 0 });
+
+  useEffect(() => {
+    api.get("/admin/stats").then(res => {
+      setData({
+        users: res.data.total_users || 0,
+        courses: res.data.total_courses || 0,
+        enrollments: res.data.total_enrollments || 0,
+        certificates: res.data.total_certificates || 0,
+      });
+    }).catch(console.error);
+  }, []);
+
   const stats = [
-    { title: "Total Users", value: "54,200", change: "+12% this month", icon: Users, color: "text-blue-600 bg-blue-50" },
-    { title: "Published Courses", value: "1,240", change: "+8 new this week", icon: BookOpen, color: "text-emerald-600 bg-emerald-50" },
-    { title: "Active Enrollments", value: "128,450", change: "+24% this month", icon: Activity, color: "text-purple-600 bg-purple-50" },
-    { title: "Certificates Issued", value: "18,920", change: "+15% this month", icon: Award, color: "text-amber-600 bg-amber-50" },
+    { title: "Total Users", value: data.users.toLocaleString(), change: "Live", icon: Users, color: "text-blue-600 bg-blue-50" },
+    { title: "Published Courses", value: data.courses.toLocaleString(), change: "Live", icon: BookOpen, color: "text-emerald-600 bg-emerald-50" },
+    { title: "Active Enrollments", value: data.enrollments.toLocaleString(), change: "Live", icon: Activity, color: "text-purple-600 bg-purple-50" },
+    { title: "Certificates Issued", value: data.certificates.toLocaleString(), change: "Live", icon: Award, color: "text-amber-600 bg-amber-50" },
   ];
 
   return (

@@ -1,22 +1,36 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus, BookOpen, Users, DollarSign, Star, Edit3, Eye } from "lucide-react";
 import { useCourses } from "@/hooks/useCourses";
 import { useAuth } from "@/hooks/useAuth";
 import { formatPrice } from "@/lib/utils";
+import { api } from "@/lib/api";
 
 export default function InstructorDashboardPage() {
   const { user } = useAuth();
   const { data, isLoading } = useCourses(user?.id ? { instructor_id: user.id } : undefined);
   const courses = data?.courses || [];
 
+  const [analytics, setAnalytics] = useState({ total_students: 0, total_revenue: 0, average_rating: 0 });
+
+  useEffect(() => {
+    api.get("/dashboard/instructor/analytics").then(res => {
+      setAnalytics({
+        total_students: res.data.total_students || 0,
+        total_revenue: res.data.total_revenue || 0,
+        average_rating: res.data.average_rating || 0,
+      });
+    }).catch(console.error);
+  }, []);
+
   const stats = [
     { title: "Total Courses", value: courses.length.toString(), icon: BookOpen, color: "text-purple-600 bg-purple-50" },
-    { title: "Total Students", value: "2,450", icon: Users, color: "text-blue-600 bg-blue-50" },
-    { title: "Total Revenue", value: "$12,400", icon: DollarSign, color: "text-emerald-600 bg-emerald-50" },
-    { title: "Average Rating", value: "4.9", icon: Star, color: "text-amber-600 bg-amber-50" },
+    { title: "Total Students", value: analytics.total_students.toLocaleString(), icon: Users, color: "text-blue-600 bg-blue-50" },
+    { title: "Total Revenue", value: formatPrice(analytics.total_revenue), icon: DollarSign, color: "text-emerald-600 bg-emerald-50" },
+    { title: "Average Rating", value: analytics.average_rating.toFixed(1), icon: Star, color: "text-amber-600 bg-amber-50" },
   ];
 
   return (

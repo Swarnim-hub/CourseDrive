@@ -17,6 +17,8 @@ export default function NewCoursePage() {
   const [categories, setCategories] = useState<{id: number, name: string}[]>([]);
   const [categoryId, setCategoryId] = useState(1);
   const [level, setLevel] = useState("all_levels");
+  const [requirements, setRequirements] = useState("");
+  const [whatYouWillLearn, setWhatYouWillLearn] = useState("");
 
   useEffect(() => {
     api.get("/categories").then(res => {
@@ -30,6 +32,8 @@ export default function NewCoursePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const numPrice = parseFloat(price) || 0;
+    const reqList = requirements.split("\\n").filter(Boolean);
+    const learnList = whatYouWillLearn.split("\\n").filter(Boolean);
     await createMutation.mutateAsync({
       title,
       subtitle: title,
@@ -38,8 +42,8 @@ export default function NewCoursePage() {
       price: numPrice,
       is_free: numPrice === 0,
       level: level as any,
-      requirements: ["Basic understanding of the subject"],
-      what_you_will_learn: ["Practical skills and real-world projects"],
+      requirements: reqList.length ? reqList : ["Basic understanding of the subject"],
+      what_you_will_learn: learnList.length ? learnList : ["Practical skills and real-world projects"],
     });
     router.push("/instructor");
   };
@@ -69,6 +73,28 @@ export default function NewCoursePage() {
             placeholder="Describe what students will learn in this course..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            className="w-full rounded-md border border-slate-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">Requirements (one per line)</label>
+          <textarea
+            rows={3}
+            placeholder="e.g. Basic understanding of HTML\nNo prior experience needed"
+            value={requirements}
+            onChange={(e) => setRequirements(e.target.value)}
+            className="w-full rounded-md border border-slate-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">What students will learn (one per line)</label>
+          <textarea
+            rows={3}
+            placeholder="e.g. Build a full-stack app\nMaster React"
+            value={whatYouWillLearn}
+            onChange={(e) => setWhatYouWillLearn(e.target.value)}
             className="w-full rounded-md border border-slate-300 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
           />
         </div>
