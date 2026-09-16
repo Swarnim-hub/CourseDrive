@@ -4,33 +4,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CourseGrid } from "@/components/course/CourseGrid";
 import { COURSE_CATEGORIES } from "@/lib/constants";
-import {
-  Code,
-  Briefcase,
-  BrainCircuit,
-  Palette,
-  TrendingUp,
-  Shield,
-  Award,
-  Users,
-  CheckCircle,
-  PlayCircle,
-  GraduationCap,
-  Sparkles,
-} from "lucide-react";
-import { useCourses } from "@/hooks/useCourses";
-
-const categoryIcons: Record<string, any> = {
-  development: Code,
-  business: Briefcase,
-  "data-science": BrainCircuit,
-  design: Palette,
-  marketing: TrendingUp,
-  cybersecurity: Shield,
-};
+import * as Icons from "lucide-react";
+import { useCourses, useCategories } from "@/hooks/useCourses";
 
 export default function HomePage() {
   const { data: coursesData, isLoading } = useCourses({ limit: 8 });
+  const { data: categories } = useCategories();
   const courses = coursesData?.courses || [];
 
   return (
@@ -40,7 +19,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100/80 text-blue-800 text-sm font-medium">
-              <Sparkles className="h-4 w-4" />
+              <Icons.Sparkles className="h-4 w-4" />
               <span>#1 Rated Online Learning Platform</span>
             </div>
 
@@ -103,8 +82,8 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {COURSE_CATEGORIES.map((cat) => {
-              const Icon = categoryIcons[cat.id] || Code;
+            {(categories || []).map((cat) => {
+              const Icon = (Icons as any)[cat.icon || "Code"] || Icons.Code;
               return (
                 <Link
                   key={cat.id}
@@ -153,7 +132,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-6 rounded-2xl border border-slate-100 bg-slate-50/50">
               <div className="h-12 w-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-4">
-                <PlayCircle className="h-6 w-6" />
+                <Icons.PlayCircle className="h-6 w-6" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900 mb-2">Learn at Your Own Pace</h3>
               <p className="text-sm text-slate-600">
@@ -163,7 +142,7 @@ export default function HomePage() {
 
             <div className="p-6 rounded-2xl border border-slate-100 bg-slate-50/50">
               <div className="h-12 w-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-4">
-                <Award className="h-6 w-6" />
+                <Icons.Award className="h-6 w-6" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900 mb-2">Verified Certificates</h3>
               <p className="text-sm text-slate-600">
@@ -173,7 +152,7 @@ export default function HomePage() {
 
             <div className="p-6 rounded-2xl border border-slate-100 bg-slate-50/50">
               <div className="h-12 w-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center mb-4">
-                <GraduationCap className="h-6 w-6" />
+                <Icons.GraduationCap className="h-6 w-6" />
               </div>
               <h3 className="text-lg font-semibold text-slate-900 mb-2">Industry Expert Instructors</h3>
               <p className="text-sm text-slate-600">

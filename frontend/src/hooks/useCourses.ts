@@ -14,6 +14,17 @@ export function useCourses(courseParams?: CourseFilterParams) {
   });
 }
 
+export function useCategories() {
+  return useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const res = await api.get<{id: number, name: string, slug: string, icon: string, description: string}[]>("/categories");
+      return res.data;
+    },
+  });
+}
+
+
 export function useCourse(slugOrId: string) {
   return useQuery({
     queryKey: ["course", slugOrId],
